@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>María Feria — Diseño & Branding</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --cream:  #faf7f2;
+      --cream2: #f0e9db;
+      --green:  #4a5a3e;
+      --green2: #6b7a5a;
+      --green3: #9baa8b;
+      --terra:  #b85c38;
+      --terra2: #d4825f;
+      --ink:    #1a1a17;
+      --ink2:   #3a3a35;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--cream);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ── CURSOR ── */
+    #cursor-dot {
+      position: fixed; width: 8px; height: 8px;
+      background: var(--terra); border-radius: 50%;
+      pointer-events: none; z-index: 9999;
+      transform: translate(-50%,-50%);
+    }
+    #cursor-ring {
+      position: fixed; width: 36px; height: 36px;
+      border: 1.5px solid rgba(26,26,23,0.25); border-radius: 50%;
+      pointer-events: none; z-index: 9998;
+      transform: translate(-50%,-50%);
+      transition: width .3s, height .3s, border-color .3s, background .3s;
+    }
+    body.cursor-hover #cursor-dot { width:0; height:0; }
+    body.cursor-hover #cursor-ring {
+      width: 60px; height: 60px;
+      border-color: var(--terra);
+      background: rgba(184,92,56,0.07);
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top:0; left:0; right:0; z-index:100;
+      padding: 1.2rem 5vw 4rem;
+      display: flex; justify-content: space-between; align-items: center;
+      background: transparent;
+      transition: background .4s ease;
+    }
+    nav.nav-dark {
+      background: linear-gradient(to bottom,
+        rgba(26,26,23,0.93) 0%,
+        rgba(26,26,23,0.88) 55%,
+        rgba(26,26,23,0.25) 85%,
+        transparent 100%);
+    }
+    nav.nav-light {
+      background: linear-gradient(to bottom,
+        rgba(250,247,242,0.97) 0%,
+        rgba(250,247,242,0.9) 55%,
+        rgba(250,247,242,0.25) 85%,
+        transparent 100%);
+    }
+
+    .nav-logo {
+      font-family: 'Playfair Display', serif; font-size: 1rem;
+      color: #fff; text-decoration: none; letter-spacing: .04em;
+      transition: color .4s ease;
+    }
+    nav.scrolled .nav-logo { color: var(--ink); }
+
+    .nav-links { display: flex; gap: 1.8rem; list-style: none; align-items: center; }
+    .nav-links a {
+      font-size: .72rem; letter-spacing: .16em; text-transform: uppercase;
+      color: rgba(255,255,255,0.92); text-decoration: none;
+      transition: color .35s ease;
+    }
+    nav.scrolled .nav-links a { color: #c8c5be; }
+    .nav-links a.active { color: var(--terra) !important; }
+    .nav-links a:hover  { color: var(--terra) !important; }
+
+    /* Contacto en píldora */
+    .nav-contact {
+      border: 1.5px solid rgba(255,255,255,0.45);
+      border-radius: 2rem;
+      padding: .32rem 1rem !important;
+      transition: border-color .35s, background .25s, color .25s !important;
+    }
+    nav.scrolled .nav-contact { border-color: rgba(255,255,255,0.28); }
+    .nav-contact.active {
+      border-color: var(--terra) !important;
+      color: var(--terra) !important;
+    }
+    .nav-contact:hover {
+      border-color: var(--terra) !important;
+      background: var(--terra) !important;
+      color: #fff !important;
+    }
+
+    /* ── HERO (oscuro — contraste con el resto claro) ── */
+    .hero {
+      min-height: 100vh; background: var(--ink);
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 0 5vw 6rem; position: relative; overflow: hidden;
+    }
+    .hero-bg-text {
+      position:absolute; top:50%; right:-2vw; transform:translateY(-50%);
+      font-family:'Playfair Display',serif;
+      font-size: clamp(14rem,28vw,36rem); line-height:1;
+      color:rgba(250,247,242,0.03); pointer-events:none; user-select:none;
+    }
+    .hero-tag {
+      font-size:.7rem; letter-spacing:.22em; text-transform:uppercase;
+      color:var(--terra); margin-bottom:2rem;
+      opacity:0; transform:translateY(20px); animation:fadeUp .7s .3s forwards;
+    }
+    .hero-title {
+      font-family:'Playfair Display',serif;
+      font-size:clamp(3.5rem,9vw,9rem); line-height:.95;
+      letter-spacing:-.02em; color:var(--cream); margin-bottom:3rem;
+    }
+    .hero-title .word { display:inline-block; overflow:hidden; }
+    .hero-title .word span {
+      display:inline-block; transform:translateY(110%);
+      animation:slideUp .8s cubic-bezier(.16,1,.3,1) forwards;
+    }
+    .hero-title em { color:var(--terra); font-style:italic; }
+    .hero-bottom {
+      display:flex; justify-content:space-between; align-items:flex-end;
+      opacity:0; transform:translateY(20px); animation:fadeUp .7s 1s forwards;
+    }
+    .hero-sub {
+      font-size:clamp(.9rem,1.2vw,1.05rem); line-height:1.7;
+      color:rgba(250,247,242,.5); max-width:36ch;
+    }
+    .hero-cta {
+      display:flex; align-items:center; gap:.8rem;
+      color:var(--cream); text-decoration:none; font-size:.82rem;
+      letter-spacing:.1em; text-transform:uppercase;
+      border-bottom:1px solid rgba(250,247,242,.3); padding-bottom:.3rem;
+      transition:color .2s,border-color .2s;
+    }
+    .hero-cta:hover { color:var(--terra); border-color:var(--terra); }
+
+    /* ── MARQUEE ── */
+    .marquee-section {
+      background: var(--ink);
+      border-top:1px solid rgba(250,247,242,.06);
+      padding:1.2rem 0; overflow:hidden;
+    }
+    .marquee-track {
+      display:flex; white-space:nowrap;
+      animation:marquee 24s linear infinite;
+    }
+    .marquee-track:hover { animation-play-state:paused; }
+    .marquee-item {
+      display:inline-flex; align-items:center; gap:1.5rem; padding:0 1.5rem;
+      font-size:.7rem; letter-spacing:.2em; text-transform:uppercase;
+      color:rgba(250,247,242,.3); flex-shrink:0;
+    }
+    .marquee-item .dot { width:4px; height:4px; background:var(--terra); border-radius:50%; }
+
+    /* ── PROYECTOS (fondo claro) ── */
+    .projects {
+      background: var(--cream); padding: 7rem 5vw 8rem;
+    }
+    .projects-header {
+      display:flex; justify-content:space-between; align-items:flex-end;
+      margin-bottom:3.5rem;
+    }
+    .section-label {
+      font-size:.68rem; letter-spacing:.22em; text-transform:uppercase;
+      color:var(--terra); margin-bottom:.6rem;
+    }
+    .section-title {
+      font-family:'Playfair Display',serif; font-size:clamp(2rem,4vw,3rem);
+      color:var(--ink); line-height:1.1;
+    }
+    .filter-tabs { display:flex; gap:.5rem; flex-wrap:wrap; }
+    .filter-btn {
+      padding:.4rem 1.1rem; border-radius:2rem;
+      border:1px solid rgba(26,26,23,.18); background:transparent;
+      font-family:'DM Sans',sans-serif; font-size:.72rem;
+      letter-spacing:.1em; text-transform:uppercase; color:var(--ink2);
+      cursor:none; transition:all .2s;
+    }
+    .filter-btn.active, .filter-btn:hover {
+      background:var(--green); border-color:var(--green); color:#fff;
+    }
+
+    /* ── GRID DE CARDS CON IMAGEN ── */
+    .projects-grid {
+      display:grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 1.5rem;
+    }
+
+    .project-card {
+      position:relative; overflow:hidden; border-radius:.6rem;
+      cursor:none; background:var(--cream2);
+      transition:transform .4s cubic-bezier(.16,1,.3,1), box-shadow .4s;
+    }
+    .project-card:hover {
+      transform:translateY(-6px);
+      box-shadow: 0 24px 60px rgba(26,26,23,.15);
+    }
+
+    .card-img {
+      width:100%; aspect-ratio:4/3; overflow:hidden; display:block;
+    }
+    .card-img img {
+      width:100%; height:100%; object-fit:cover; display:block;
+      transition:transform .6s cubic-bezier(.16,1,.3,1);
+    }
+    .project-card:hover .card-img img { transform:scale(1.06); }
+
+    .card-overlay {
+      position:absolute; inset:0;
+      background:rgba(74,90,62,.82);
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+      opacity:0; transition:opacity .35s;
+    }
+    .project-card:hover .card-overlay { opacity:1; }
+    .overlay-arrow {
+      font-size:2rem; color:#fff; margin-bottom:.5rem;
+      transform:rotate(-45deg);
+      transition:transform .3s cubic-bezier(.16,1,.3,1);
+    }
+    .project-card:hover .overlay-arrow { transform:rotate(-45deg) scale(1.2); }
+    .overlay-label {
+      font-size:.65rem; letter-spacing:.2em; text-transform:uppercase;
+      color:rgba(255,255,255,.7);
+    }
+
+    .card-body { padding:1.2rem 1.4rem 1.5rem; }
+    .card-cat {
+      font-size:.62rem; letter-spacing:.18em; text-transform:uppercase;
+      color:var(--terra); margin-bottom:.4rem;
+    }
+    .card-name {
+      font-family:'Playfair Display',serif; font-size:1.15rem;
+      color:var(--ink); line-height:1.2;
+    }
+
+    /* reveal scroll */
+    .reveal {
+      opacity:0; transform:translateY(32px);
+      transition:opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1);
+    }
+    .reveal.visible { opacity:1; transform:translateY(0); }
+    .reveal-d1 { transition-delay:.1s; }
+    .reveal-d2 { transition-delay:.2s; }
+
+    /* ── ABOUT (fondo crema oscuro) ── */
+    .about {
+      background: var(--cream2); padding:7rem 5vw;
+    }
+    .about-inner {
+      display:grid; grid-template-columns:1fr 1.3fr; gap:6rem; align-items:center;
+    }
+    .about-headline {
+      font-family:'Playfair Display',serif; font-size:clamp(2rem,3.5vw,3rem);
+      line-height:1.15; color:var(--ink); margin-bottom:1.8rem;
+    }
+    .about-headline em { color:var(--terra); font-style:italic; }
+    .about-body { font-size:1rem; line-height:1.85; color:var(--ink2); }
+    .about-body p+p { margin-top:1.2rem; }
+    .skills-grid {
+      display:grid; grid-template-columns:1fr 1fr; gap:.7rem; margin-top:2rem;
+    }
+    .skill-chip {
+      background:var(--ink); color:var(--cream);
+      padding:.55rem .9rem; border-radius:.3rem; font-size:.78rem;
+      letter-spacing:.06em; display:flex; align-items:center; gap:.5rem;
+      transition:background .2s;
+    }
+    .skill-chip::before {
+      content:''; width:5px; height:5px; background:var(--terra);
+      border-radius:50%; flex-shrink:0;
+    }
+    .skill-chip:hover { background:var(--green); }
+
+    .about-imgs { position:relative; height:520px; }
+    .about-img-card {
+      position:absolute; border-radius:.8rem; overflow:hidden;
+      box-shadow:0 16px 50px rgba(26,26,23,.15);
+    }
+    .about-img-card img { width:100%; height:100%; object-fit:cover; display:block; }
+    .about-img-card:first-child { width:65%; height:58%; top:0; right:0; }
+    .about-img-card:last-child  { width:54%; height:50%; bottom:0; left:0; }
+    .about-badge {
+      position:absolute; bottom:60px; right:-8px;
+      background:var(--green); color:#fff;
+      padding:1rem 1.3rem; border-radius:.6rem; font-size:.78rem;
+      line-height:1.5; z-index:2; box-shadow:0 8px 24px rgba(74,90,62,.3);
+    }
+    .about-badge strong {
+      display:block; font-family:'Playfair Display',serif;
+      font-size:1.8rem; line-height:1; margin-bottom:.2rem; color:var(--green3);
+    }
+
+    /* ── CTA STRIP ── */
+    .cta-strip {
+      background:var(--terra); padding:5rem 5vw;
+      display:flex; justify-content:space-between; align-items:center; gap:2rem;
+      overflow:hidden; position:relative;
+    }
+    .cta-strip::before {
+      content:'Hablemos'; position:absolute; right:-5vw;
+      font-family:'Playfair Display',serif;
+      font-size:clamp(8rem,18vw,20rem); color:rgba(255,255,255,.06);
+      line-height:1; pointer-events:none; white-space:nowrap;
+    }
+    .cta-text h2 {
+      font-family:'Playfair Display',serif; font-size:clamp(2rem,4vw,3rem);
+      color:#fff; line-height:1.1;
+    }
+    .cta-text h2 em { font-style:italic; opacity:.65; }
+    .btn-cta {
+      background:var(--ink); color:var(--cream);
+      padding:1.1rem 2.4rem; border-radius:3rem; text-decoration:none;
+      font-size:.85rem; letter-spacing:.08em; text-transform:uppercase;
+      white-space:nowrap; flex-shrink:0; position:relative; z-index:1;
+      transition:background .25s, transform .2s;
+    }
+    .btn-cta:hover { background:var(--green); transform:translateY(-2px); }
+
+    /* ── CONTACT (oscuro) ── */
+    .contact {
+      background:var(--ink); padding:7rem 5vw;
+      display:grid; grid-template-columns:1fr 1fr; gap:6rem; align-items:start;
+    }
+    .contact .section-label { color:var(--terra); }
+    .contact h2 {
+      font-family:'Playfair Display',serif; font-size:clamp(2rem,3.5vw,3rem);
+      color:var(--cream); margin-bottom:1rem;
+    }
+    .contact-links { margin-top:2rem; display:flex; flex-direction:column; gap:1rem; }
+    .contact-link {
+      display:flex; align-items:center; gap:1rem; text-decoration:none;
+      color:rgba(250,247,242,.45); font-size:.9rem; transition:color .2s;
+    }
+    .contact-link:hover { color:var(--terra); }
+    .contact-link-icon {
+      width:40px; height:40px; border-radius:50%;
+      border:1px solid rgba(250,247,242,.12); display:grid;
+      place-items:center; font-size:.85rem; flex-shrink:0;
+      transition:background .2s, border-color .2s;
+    }
+    .contact-link:hover .contact-link-icon { background:var(--terra); border-color:var(--terra); color:#fff; }
+    .contact-form { display:flex; flex-direction:column; gap:1.1rem; }
+    .form-group { display:flex; flex-direction:column; gap:.4rem; }
+    .form-group label {
+      font-size:.65rem; letter-spacing:.16em; text-transform:uppercase;
+      color:rgba(250,247,242,.3);
+    }
+    .form-group input, .form-group textarea {
+      background:rgba(250,247,242,.05); border:1px solid rgba(250,247,242,.1);
+      border-radius:.4rem; padding:.85rem 1rem;
+      font-family:'DM Sans',sans-serif; font-size:.9rem; color:var(--cream);
+      outline:none; resize:none; transition:border-color .2s, background .2s;
+    }
+    .form-group input:focus, .form-group textarea:focus {
+      border-color:var(--terra); background:rgba(184,92,56,.05);
+    }
+    .form-group textarea { min-height:110px; }
+    .btn-submit {
+      background:var(--terra); color:#fff; border:none;
+      padding:.9rem 2.2rem; border-radius:3rem;
+      font-family:'DM Sans',sans-serif; font-size:.82rem;
+      letter-spacing:.08em; text-transform:uppercase;
+      cursor:none; align-self:flex-start;
+      transition:background .25s, transform .2s;
+    }
+    .btn-submit:hover { background:var(--green); transform:translateY(-2px); }
+
+    /* ── FOOTER ── */
+    footer {
+      background:var(--ink); border-top:1px solid rgba(250,247,242,.06);
+      color:rgba(250,247,242,.3); padding:1.8rem 5vw;
+      display:flex; justify-content:space-between; align-items:center;
+      font-size:.75rem; letter-spacing:.05em;
+    }
+    footer a { color:var(--green3); text-decoration:none; }
+
+    /* ── KEYFRAMES ── */
+    @keyframes fadeUp  { to { opacity:1; transform:translateY(0); } }
+    @keyframes slideUp { to { transform:translateY(0); } }
+    @keyframes marquee { from { transform:translateX(0); } to { transform:translateX(-50%); } }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width:1000px) {
+      .projects-grid { grid-template-columns:repeat(2,1fr); }
+    }
+    @media (max-width:720px) {
+      body { cursor:auto; }
+      #cursor-dot, #cursor-ring { display:none; }
+      .projects-grid { grid-template-columns:1fr; }
+      .about-inner  { grid-template-columns:1fr; }
+      .about-imgs   { height:320px; }
+      .contact      { grid-template-columns:1fr; }
+      .projects-header { flex-direction:column; align-items:flex-start; gap:1.5rem; }
+      .hero-bottom  { flex-direction:column; align-items:flex-start; gap:1.5rem; }
+      .cta-strip    { flex-direction:column; text-align:center; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">María Feria</a>
+  <ul class="nav-links">
+    <li><a href="#about">Sobre mí</a></li>
+    <li><a href="#projects">Proyectos</a></li>
+    <li><a href="#contact" class="nav-contact">Contacto</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-text" aria-hidden="true">MF</div>
+  <span class="hero-tag">Diseño & Branding · Sevilla</span>
+  <h1 class="hero-title">
+    <span class="word"><span style="animation-delay:.5s">Diseño</span></span>
+    <span class="word" style="margin-left:.22em"><span style="animation-delay:.65s">con</span></span><br>
+    <span class="word"><span style="animation-delay:.8s"><em>criterio</em></span></span><br>
+    <span class="word"><span style="animation-delay:.95s">y</span></span>
+    <span class="word" style="margin-left:.22em"><span style="animation-delay:1.05s">con</span></span>
+    <span class="word" style="margin-left:.22em"><span style="animation-delay:1.15s">ganas.</span></span>
+  </h1>
+  <div class="hero-bottom">
+    <p class="hero-sub">Identidades visuales, materiales corporativos y branding que funcionan de verdad. Sin carrera de diseño, pero con un año de trabajo real y las ganas de seguir.</p>
+    <a href="#projects" class="hero-cta">Ver proyectos →</a>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-section" aria-hidden="true">
+  <div class="marquee-track">
+    <span class="marquee-item">Branding<span class="dot"></span></span>
+    <span class="marquee-item">Identidad de marca<span class="dot"></span></span>
+    <span class="marquee-item">Diseño editorial<span class="dot"></span></span>
+    <span class="marquee-item">Cartelería<span class="dot"></span></span>
+    <span class="marquee-item">Packaging<span class="dot"></span></span>
+    <span class="marquee-item">Manuales de marca<span class="dot"></span></span>
+    <span class="marquee-item">Mockups<span class="dot"></span></span>
+    <span class="marquee-item">Trípticos<span class="dot"></span></span>
+    <span class="marquee-item">Branding<span class="dot"></span></span>
+    <span class="marquee-item">Identidad de marca<span class="dot"></span></span>
+    <span class="marquee-item">Diseño editorial<span class="dot"></span></span>
+    <span class="marquee-item">Cartelería<span class="dot"></span></span>
+    <span class="marquee-item">Packaging<span class="dot"></span></span>
+    <span class="marquee-item">Manuales de marca<span class="dot"></span></span>
+    <span class="marquee-item">Mockups<span class="dot"></span></span>
+    <span class="marquee-item">Trípticos<span class="dot"></span></span>
+  </div>
+</div>
+
+<!-- PROYECTOS -->
+<section class="projects" id="projects">
+  <div class="projects-header reveal">
+    <div>
+      <p class="section-label">Trabajo seleccionado</p>
+      <h2 class="section-title">Lo que he hecho.</h2>
+    </div>
+    <div class="filter-tabs">
+      <button class="filter-btn active" onclick="filterCards('all',this)">Todo</button>
+      <button class="filter-btn" onclick="filterCards('branding',this)">Branding</button>
+      <button class="filter-btn" onclick="filterCards('impresos',this)">Impresos</button>
+      <button class="filter-btn" onclick="filterCards('mockup',this)">Mockup</button>
+    </div>
+  </div>
+  <div class="projects-grid" id="projects-grid">
+    <!-- generado por JS desde config.js -->
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="about-inner">
+    <div class="reveal">
+      <p class="section-label">Sobre mí</p>
+      <h2 class="about-headline">Informática de día,<br><em>diseñadora</em> de siempre.</h2>
+      <div class="about-body">
+        <p>Estoy terminando Ingeniería Informática en Sistemas de Información en la UPO (Sevilla) y también investigo en inteligencia artificial y bioinformática en SynergIA Lab.</p>
+        <p>Desde hace más de un año llevo todo lo relacionado con diseño, branding e identidad visual para Bavarian Group (inmobiliaria internacional en República Dominicana) y Drive Pádel Sevilla. Manuales de identidad, carteles, brochures, packaging, banderas, webs… lo que haga falta.</p>
+        <p>No tengo el título de diseñadora. Tengo los proyectos.</p>
+      </div>
+      <div class="skills-grid">
+        <div class="skill-chip">Branding & Identidad</div>
+        <div class="skill-chip">Manuales de marca</div>
+        <div class="skill-chip">Materiales corporativos</div>
+        <div class="skill-chip">Packaging & Mockups</div>
+        <div class="skill-chip">Affinity Publisher</div>
+        <div class="skill-chip">Canva Pro</div>
+      </div>
+    </div>
+    <div class="about-imgs reveal reveal-d2">
+      <div class="about-img-card">
+        <img src="img/BAVARIAN REAL ESTATE/ORIÓN - proyecto inmobilairio/ORIÓN - Mockup tríptico - doblado 1.jpg" alt="Tríptico Orión" />
+      </div>
+      <div class="about-img-card">
+        <img src="img/DRIVE PADEL - escuela de pádel/mockup - 2.jpg" alt="Drive Pádel" />
+      </div>
+      <div class="about-badge"><strong>2+</strong>marcas desde cero</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-strip">
+  <div class="cta-text">
+    <h2>Tienes un proyecto.<br>Yo tengo <em>las ganas.</em></h2>
+  </div>
+  <a href="#contact" class="btn-cta">Escríbeme →</a>
+</div>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="reveal">
+    <p class="section-label">Contacto</p>
+    <h2>Cuéntame<br>qué necesitas.</h2>
+    <p style="color:rgba(250,247,242,.4);font-size:.95rem;line-height:1.75;margin-top:.5rem;">Disponible para proyectos freelance. Precios razonables y ganas reales.</p>
+    <div class="contact-links">
+      <a href="mailto:fercanmaria@gmail.com" class="contact-link">
+        <span class="contact-link-icon">✉</span>fercanmaria@gmail.com
+      </a>
+      <a href="https://linkedin.com" class="contact-link" target="_blank">
+        <span class="contact-link-icon">in</span>LinkedIn
+      </a>
+      <a href="https://behance.net" class="contact-link" target="_blank">
+        <span class="contact-link-icon">Bē</span>Behance
+      </a>
+    </div>
+  </div>
+  <div class="reveal reveal-d2">
+    <form class="contact-form" onsubmit="handleSubmit(event)">
+      <div class="form-group"><label>Nombre</label><input type="text" placeholder="Tu nombre" /></div>
+      <div class="form-group"><label>Email</label><input type="email" placeholder="tu@email.com" /></div>
+      <div class="form-group"><label>Proyecto</label><textarea placeholder="Cuéntame qué tienes en mente..."></textarea></div>
+      <button type="submit" class="btn-submit">Enviar mensaje →</button>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <span>© 2026 María Feria Cañasveras · Sevilla</span>
+  <a href="mailto:fercanmaria@gmail.com">fercanmaria@gmail.com</a>
+</footer>
+
+<script src="config.js"></script>
+<script>
+  // ── RENDER CARDS desde config.js ──
+  const grid = document.getElementById('projects-grid');
+  PROYECTOS.forEach((p, i) => {
+    const delay = (i % 3) * 0.1;
+    const card = document.createElement('div');
+    card.className = 'project-card reveal';
+    card.dataset.cat = p.categoria;
+    card.style.transitionDelay = delay + 's';
+    card.onclick = () => window.open('proyecto.html?p=' + p.id, '_blank');
+    card.innerHTML = `
+      <div class="card-img">
+        <img src="${p.cover}" alt="${p.titulo}" loading="lazy" />
+      </div>
+      <div class="card-overlay">
+        <span class="overlay-arrow">↗</span>
+        <span class="overlay-label">Ver proyecto</span>
+      </div>
+      <div class="card-body">
+        <p class="card-cat">${p.categoria.charAt(0).toUpperCase()+p.categoria.slice(1)} · ${p.año}</p>
+        <p class="card-name">${p.titulo}<br><em style="font-style:italic;color:var(--terra);font-size:.95em">${p.subtitulo}</em></p>
+      </div>`;
+    grid.appendChild(card);
+  });
+
+  // ── FILTRO ──
+  function filterCards(cat, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.project-card').forEach(c => {
+      c.style.display = (cat==='all' || c.dataset.cat===cat) ? '' : 'none';
+    });
+  }
+
+  // ── SCROLL REVEAL ──
+  const revealObs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold:.08 });
+  document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+  // ── CURSOR ──
+  const dot=document.getElementById('cursor-dot'), ring=document.getElementById('cursor-ring');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove', e => {
+    mx=e.clientX; my=e.clientY;
+    dot.style.left=mx+'px'; dot.style.top=my+'px';
+  });
+  (function loop(){
+    rx+=(mx-rx)*.12; ry+=(my-ry)*.12;
+    ring.style.left=rx+'px'; ring.style.top=ry+'px';
+    requestAnimationFrame(loop);
+  })();
+  document.querySelectorAll('a,button,.project-card,.filter-btn').forEach(el=>{
+    el.addEventListener('mouseenter',()=>document.body.classList.add('cursor-hover'));
+    el.addEventListener('mouseleave',()=>document.body.classList.remove('cursor-hover'));
+  });
+
+  // ── NAV SCROLL ──
+  const navEl   = document.querySelector('nav');
+  const navLinks = document.querySelectorAll('.nav-links a');
+
+  // Mapa: href → sección
+  const sections = [
+    { id: 'about',    link: document.querySelector('a[href="#about"]') },
+    { id: 'projects', link: document.querySelector('a[href="#projects"]') },
+    { id: 'contact',  link: document.querySelector('a[href="#contact"]') },
+  ];
+
+  function updateNav() {
+    const y   = window.scrollY;
+    const mid = y + 80;
+
+    // scrolled (logo gris)
+    navEl.classList.toggle('scrolled', y > 60);
+
+    // fondo oscuro/claro según sección
+    if (y < 60) {
+      navEl.classList.remove('nav-dark', 'nav-light');
+    } else {
+      const lightSecs = document.querySelectorAll('.projects, .about');
+      let isLight = false;
+      lightSecs.forEach(sec => {
+        if (mid >= sec.offsetTop && mid < sec.offsetTop + sec.offsetHeight) isLight = true;
+      });
+      navEl.classList.toggle('nav-light', isLight);
+      navEl.classList.toggle('nav-dark', !isLight);
+    }
+
+    // link activo = color teja
+    navLinks.forEach(a => a.classList.remove('active'));
+    let active = null;
+    sections.forEach(({ id, link }) => {
+      const sec = document.getElementById(id);
+      if (!sec || !link) return;
+      if (mid >= sec.offsetTop && mid < sec.offsetTop + sec.offsetHeight) active = link;
+    });
+    if (active) active.classList.add('active');
+  }
+
+  window.addEventListener('scroll', updateNav, { passive: true });
+  updateNav();
+
+  // ── FORMULARIO ──
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn=e.target.querySelector('.btn-submit');
+    btn.textContent='¡Enviado! ✓'; btn.style.background='var(--green)';
+    setTimeout(()=>{ btn.textContent='Enviar mensaje →'; btn.style.background=''; },3000);
+  }
+</script>
+</body>
+</html>
