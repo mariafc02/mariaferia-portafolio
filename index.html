@@ -91,6 +91,25 @@
     .nav-links a.active { color: var(--terra) !important; }
     .nav-links a:hover  { color: var(--terra) !important; }
 
+    .menu-toggle{
+        display:none;
+        width:42px;
+        height:42px;
+        background:none;
+        border:none;
+        cursor:pointer;
+        z-index:1001;
+    }
+
+    .menu-toggle span{
+        display:block;
+        width:24px;
+        height:2px;
+        margin:5px auto;
+        background:white;
+        transition:.3s;
+    }
+
     /* Contacto en píldora */
     .nav-contact {
       border: 1.5px solid rgba(255,255,255,0.45);
@@ -405,16 +424,100 @@
     @media (max-width:1000px) {
       .projects-grid { grid-template-columns:repeat(2,1fr); }
     }
-    @media (max-width:720px) {
-      body { cursor:auto; }
-      #cursor-dot, #cursor-ring { display:none; }
-      .projects-grid { grid-template-columns:1fr; }
-      .about-inner  { grid-template-columns:1fr; }
-      .about-imgs   { height:320px; }
-      .contact      { grid-template-columns:1fr; }
-      .projects-header { flex-direction:column; align-items:flex-start; gap:1.5rem; }
-      .hero-bottom  { flex-direction:column; align-items:flex-start; gap:1.5rem; }
-      .cta-strip    { flex-direction:column; text-align:center; }
+    @media (max-width:720px){
+
+        body{
+            cursor:auto;
+        }
+
+        #cursor-dot,
+        #cursor-ring{
+            display:none;
+        }
+
+        nav{
+            padding:1rem 5vw;
+        }
+
+        .menu-toggle{
+            display:block;
+        }
+
+        .nav-links{
+            position:fixed;
+            top:0;
+            right:-100%;
+            width:280px;
+            height:100vh;
+
+            background:rgba(26,26,23,.98);
+
+            flex-direction:column;
+            justify-content:center;
+            align-items:center;
+
+            gap:2rem;
+
+            transition:right .35s ease;
+
+            backdrop-filter:blur(10px);
+        }
+
+        .nav-links.open{
+            right:0;
+        }
+
+        .nav-links a{
+            font-size:.9rem;
+            letter-spacing:.18em;
+        }
+
+        .nav-contact{
+            margin-top:1rem;
+        }
+
+        .hero{
+            min-height:100vh;
+            justify-content:flex-end;
+            padding:0 5vw 8rem;
+        }
+
+        .hero-title{
+            font-size:clamp(3rem,14vw,5rem);
+        }
+
+        .hero-bottom{
+            flex-direction:column;
+            align-items:flex-start;
+            gap:1.5rem;
+        }
+
+        .projects-grid{
+            grid-template-columns:1fr;
+        }
+
+        .about-inner{
+            grid-template-columns:1fr;
+        }
+
+        .about-imgs{
+            height:320px;
+        }
+
+        .contact{
+            grid-template-columns:1fr;
+        }
+
+        .projects-header{
+            flex-direction:column;
+            align-items:flex-start;
+            gap:1.5rem;
+        }
+
+        .cta-strip{
+            flex-direction:column;
+            text-align:center;
+        }
     }
   </style>
 </head>
@@ -426,7 +529,14 @@
 <!-- NAV -->
 <nav>
   <a class="nav-logo" href="#">María Feria</a>
-  <ul class="nav-links">
+
+  <button class="menu-toggle" id="menuToggle">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <ul class="nav-links" id="mobileMenu">
     <li><a href="#about">Sobre mí</a></li>
     <li><a href="#projects">Proyectos</a></li>
     <li><a href="#contact" class="nav-contact">Contacto</a></li>
@@ -676,5 +786,17 @@
     setTimeout(()=>{ btn.textContent='Enviar mensaje →'; btn.style.background=''; },3000);
   }
 </script>
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    menuToggle.addEventListener('click', () => {
+    mobileMenu.classList.toggle('open');
+    });
+
+    mobileMenu.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+        mobileMenu.classList.remove('open');
+    });
+    });
 </body>
 </html>
